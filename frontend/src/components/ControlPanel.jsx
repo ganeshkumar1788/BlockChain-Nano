@@ -20,7 +20,7 @@ export default function ControlPanel() {
         
         <button 
           onClick={async () => {
-            await fetch('http://localhost:5000/api/authenticate/all', { method: 'POST' });
+            await fetch(`http://${window.location.hostname}:5000/api/authenticate/all`, { method: 'POST' });
           }}
           className="w-full relative group overflow-hidden bg-white/5 hover:bg-white/10 text-zinc-100 font-medium py-3 px-4 rounded-xl border border-white/10 transition-all flex items-center justify-center gap-2"
         >

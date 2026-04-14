@@ -30,7 +30,8 @@ const TRANSPORT_MQTT_URL = "mqtts://8828643160384c63a286fc7e2e434d3e.s1.eu.hivem
 // --- In-Memory State ---
 let devices = [
     { id: 'ESP32_01', type: 'Industry', status: 'Online', lastActive: new Date() },
-    { id: 'ESP32_02', type: 'Transport', status: 'Online', lastActive: new Date() }
+    { id: 'ESP32_02', type: 'Transport', status: 'Online', lastActive: new Date() },
+    { id: 'ESP32_03', type: 'Untrusted', status: 'Online', lastActive: new Date() }
 ];
 let auditEvents = [];
 let threatLevel = 'LOW';
@@ -106,17 +107,22 @@ app.post('/api/pipeline/run', async (req, res) => {
     const { device_id } = req.body;
     res.json({ status: 'started' });
 
-    const steps = [
-        { msg: `REQUEST: Inbound auth request from ${device_id}...`, status: 'success' },
-        { msg: `IDENTITY: Verifying device fingerprint in secure registry...`, status: 'success' },
-        { msg: `SIGNATURE: Validating SHA-256 HMAC signature...`, status: 'success' },
-        { msg: `BLOCKCHAIN: Querying Ethereum ledger for trust score...`, status: 'success' },
-        { msg: `DECISION: Access Granted. Device context verified.`, status: 'success' }
-    ];
+    const isTrusted = ['ESP32_01', 'ESP32_02'].includes(device_id);
+    const timestamp = Date.now();
+    const payload = `${device_id}${timestamp}${SHARED_SECRET}`;
+    const realSignature = crypto.createHash('sha256').update(payload).digest('hex');
+    
+    const trustScore = isTrusted 
+        ? 100 
+        : Math.floor(Math.random() * (45 - 10 + 1) + 10);
 
-    if (device_id === 'ESP32_02') { // Simulated failure case if needed
-        steps[3] = { msg: `BLOCKCHAIN: Device trust score below threshold (Malicious detected)`, status: 'rejected', reason: 'UNTRUSTED_NODE' };
-    }
+    const steps = [
+        { label: 'Request',    msg: `Request Received from ${device_id}`, status: 'success' },
+        { label: 'Identity',   msg: `Identity ${isTrusted ? 'Verified' : 'Check Passed'}`, status: 'success' },
+        { label: 'Signature',  msg: `Signature Received: ${realSignature}`, status: isTrusted ? 'success' : 'rejected', reason: isTrusted ? 'Signature VALID' : 'Signature INVALID' },
+        { label: 'Blockchain', msg: `Blockchain Verified`, status: 'success' },
+        { label: 'Decision',   msg: `ACCESS GRANTED`, status: 'success' }
+    ];
 
     for (let i = 0; i < steps.length; i++) {
         io.emit('auth_flow', { 
@@ -125,17 +131,33 @@ app.post('/api/pipeline/run', async (req, res) => {
             status: 'active', 
             message: steps[i].msg 
         });
-        await new Promise(r => setTimeout(r, 600));
+        await new Promise(r => setTimeout(r, 300));
         
-        io.emit('auth_flow', { 
+        const payload = { 
             source: 'pipeline', 
             step: i + 1, 
             status: steps[i].status, 
             message: steps[i].msg,
-            reason: steps[i].reason
-        });
+            reason: steps[i].reason,
+            signature: i === 2 ? realSignature : null,
+            trustScore: i === 2 ? trustScore : null, // Send trust score at signature stage
+            isTrusted
+        };
 
-        if (steps[i].status === 'rejected') break;
+        io.emit('auth_flow', payload);
+
+        if (steps[i].status === 'rejected') {
+            io.emit('auth_flow', {
+                source: 'pipeline',
+                step: i + 1,
+                status: 'rejected',
+                message: 'ACCESS DENIED',
+                trustScore,
+                reason: 'DEVICE NOT TRUSTED',
+                isFinal: true
+            });
+            break;
+        }
     }
 });
 

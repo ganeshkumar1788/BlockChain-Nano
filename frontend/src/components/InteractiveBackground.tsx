@@ -4,7 +4,7 @@ import { io } from 'socket.io-client';
 import { useData } from '../context/DataContext';
 import RotatingEarth from './ui/wireframe-dotted-globe';
 
-const socket = io('http://localhost:5000');
+const socket = io(`http://${window.location.hostname}:5000`);
 
 export default function InteractiveBackground({ isDark }: { isDark: boolean }) {
   const mountRef = useRef<HTMLCanvasElement>(null);
@@ -54,20 +54,20 @@ export default function InteractiveBackground({ isDark }: { isDark: boolean }) {
         const ringGeo = new THREE.RingGeometry(radius, radius + 0.1, 128);
         const ringMat = new THREE.MeshBasicMaterial({ 
             color, transparent: true, opacity, side: THREE.DoubleSide, blending: THREE.AdditiveBlending 
-        });
+            });
         const ring = new THREE.Mesh(ringGeo, ringMat);
         ring.rotation.x = Math.PI / 2;
         return ring;
     };
-    const industryRing = createRing(18, 0x10b981, 0.2);
-    const transportRing = createRing(28, 0xf59e0b, 0.2);
+    const industryRing = createRing(18, 0x3b82f6, 0.2);
+    const transportRing = createRing(28, 0x8b5cf6, 0.2);
     group.add(industryRing);
     group.add(transportRing);
 
     // Industry Node (Inner Planet)
     const industryGeo = new THREE.SphereGeometry(1.2, 32, 32);
     const industryNode = new THREE.Mesh(industryGeo, new THREE.MeshStandardMaterial({
-        color: 0x10b981, emissive: 0x10b981, emissiveIntensity: 1, roughness: 0.4
+        color: 0x3b82f6, emissive: 0x3b82f6, emissiveIntensity: 1, roughness: 0.4
     }));
     const indPivot = new THREE.Group();
     industryNode.position.set(18, 0, 0);
@@ -77,7 +77,7 @@ export default function InteractiveBackground({ isDark }: { isDark: boolean }) {
     // Transport Node (Outer Planet)
     const transportGeo = new THREE.SphereGeometry(1.5, 32, 32);
     const transportNode = new THREE.Mesh(transportGeo, new THREE.MeshStandardMaterial({
-        color: 0xf59e0b, emissive: 0xf59e0b, emissiveIntensity: 1.2, roughness: 0.3
+        color: 0x8b5cf6, emissive: 0x8b5cf6, emissiveIntensity: 1.2, roughness: 0.3
     }));
     const traPivot = new THREE.Group();
     transportNode.position.set(-28, 0, 0);
@@ -180,7 +180,7 @@ export default function InteractiveBackground({ isDark }: { isDark: boolean }) {
                 className={`opacity-80 transition-filter duration-500 ${threatState === 'CRITICAL' ? 'blur-[2px] brightness-150' : ''}`} 
             />
             {/* Energy Hub Glow Overlay */}
-            <div className={`absolute inset-0 rounded-full blur-[100px] transition-colors duration-500 ${threatState === 'CRITICAL' ? 'bg-rose-500/40' : 'bg-blue-500/20'}`} />
+            <div className={`absolute inset-0 rounded-full blur-[100px] transition-colors duration-500 ${threatState === 'CRITICAL' ? 'bg-rose-500/40' : 'bg-brand-500/20'}`} />
         </div>
 
         <canvas ref={mountRef} className="absolute inset-0 w-full h-full" />

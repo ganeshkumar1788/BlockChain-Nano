@@ -13,7 +13,7 @@ export default function CybersecurityEngine() {
     }
 
     try {
-      await fetch(`http://localhost:5000/api/actions/${endpoint}`, { method: 'POST' });
+      await fetch(`http://${window.location.hostname}:5000/api/actions/${endpoint}`, { method: 'POST' });
     } catch(e) {}
 
     if (duration > 0) {

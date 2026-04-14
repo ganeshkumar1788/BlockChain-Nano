@@ -1,9 +1,11 @@
-import React from 'react';
+import { DataProvider } from './context/DataContext';
 import DashboardLayout from './components/DashboardLayout';
 
 function App() {
   return (
-    <DashboardLayout />
+    <DataProvider>
+      <DashboardLayout />
+    </DataProvider>
   )
 }
 

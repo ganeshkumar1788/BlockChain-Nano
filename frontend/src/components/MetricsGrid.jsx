@@ -3,16 +3,10 @@ import { Activity, ShieldAlert, Hash } from 'lucide-react';
 import { DataContext } from '../context/DataContext';
 
 export default function MetricsGrid() {
-  const { events } = useContext(DataContext);
+  const { events, lastHash, globalThreatLevel } = useContext(DataContext);
   const reqCount = events.length;
-  // Compute threat level roughly based on error logs occurring quickly or trust score.
-  // We'll keep it simple: if last event was an error, Elevated, if many, Critical
-  let threatLevel = 'Low';
-  const recentRejects = events.slice(0, 5).filter(e => e.status === 'Rejected');
-  if (recentRejects.length >= 3) threatLevel = 'Critical';
-  else if (recentRejects.length >= 1) threatLevel = 'Elevated';
-
-  const lastTx = events.length > 0 ? events[0].hash : 'Awaiting system initialization...';
+  const threatLevel = globalThreatLevel;
+  const lastTx = lastHash;
 
   return (
     <div id="demo-section" className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8 reveal active pt-10">

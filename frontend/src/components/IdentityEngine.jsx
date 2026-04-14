@@ -20,14 +20,14 @@ export default function IdentityEngine() {
   return (
     <div className="glass-panel rounded-3xl p-7 reveal active" id="identity-card">
         <div className="flex items-center justify-between mb-7">
-            <h2 className="text-xl font-bold flex items-center gap-3 text-slate-900 dark:text-white">
-                <div className="p-2 bg-brand-500/10 rounded-lg">
-                  <Fingerprint className="text-brand-500 w-5 h-5" />
+            <h2 className="text-xl font-black flex items-center gap-3 text-white uppercase tracking-tighter">
+                <div className="p-2 bg-orange-500/10 rounded-lg border border-orange-500/20">
+                  <Fingerprint className="text-orange-500 w-5 h-5" />
                 </div>
-                Web3 Identity Engine
+                Web3 Identity
             </h2>
-            <span className={`px-3 py-1.5 rounded-lg text-[10px] uppercase font-black tracking-widest border transition-colors ${isSecured ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' : 'bg-slate-500/10 text-slate-500 dark:text-slate-400 border-slate-500/20'}`}>
-              {isSecured ? 'ECDSA Verified' : 'Awaiting Boot'}
+            <span className={`px-3 py-1.5 rounded-lg text-[10px] uppercase font-black tracking-widest border transition-all duration-500 ${isSecured ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]' : 'bg-white/5 text-gray-500 border-white/10'}`}>
+              {isSecured ? 'ECDSA VERIFIED' : 'AWAITING AUTH'}
             </span>
         </div>
 
@@ -36,8 +36,8 @@ export default function IdentityEngine() {
             <Cpu className="h-5 w-5 animate-pulse" /> Awaiting Hardware Signing...
           </div>
         ) : (
-          <div className="w-full bg-emerald-600 border border-emerald-500/50 text-white font-bold py-3.5 px-4 rounded-xl flex justify-center items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.2)] cursor-default">
-            <CheckCircle className="h-5 w-5" /> Smart Contract Secured
+          <div className="w-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-bold py-3.5 px-4 rounded-xl flex justify-center items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.2)] cursor-default">
+            <CheckCircle className="h-5 w-5" /> Ledger Synchronized
           </div>
         )}
 
@@ -54,10 +54,10 @@ export default function IdentityEngine() {
             
             <div className="relative group cursor-pointer" onClick={() => copyToClipboard(ethAddress, 'eth')}>
                 <div className={`copy-tooltip ${copied === 'eth' ? 'show' : ''}`}>Copied!</div>
-                <label className="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5 flex justify-between items-center">
+                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 flex justify-between items-center">
                     Ethereum Public Address <Copy className="w-3.5 h-3.5 opacity-40 group-hover:opacity-100 transition-opacity" />
                 </label>
-                <div className="font-mono text-xs bg-brand-500/10 p-3.5 rounded-xl border border-brand-500/20 text-brand-700 dark:text-brand-300 break-all transition-colors group-hover:bg-brand-500/20">
+                <div className="font-mono text-xs bg-orange-500/5 p-3.5 rounded-xl border border-orange-500/20 text-orange-400 break-all transition-colors group-hover:bg-orange-500/10">
                     {ethAddress}
                 </div>
             </div>

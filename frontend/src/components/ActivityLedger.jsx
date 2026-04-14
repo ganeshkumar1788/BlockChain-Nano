@@ -26,16 +26,21 @@ export default function ActivityLedger() {
                 </div>
             ) : (
                 logs.map((L, i) => {
-                    const isSuccess = L.type === 'success';
-                    const isError = L.type === 'error';
-                    const isWarn = L.type === 'warning';
+                    const isObject = typeof L === 'object' && L !== null;
+                    const logType = isObject ? L.type : 'info';
+                    const logMsg = isObject ? (L.message || L.text || '') : L;
+                    const logTime = isObject ? (L.timestamp || Date.now()) : Date.now();
+
+                    const isSuccess = logType === 'success';
+                    const isError = logType === 'error';
+                    const isWarn = logType === 'warning';
 
                     const bg = isSuccess ? 'bg-emerald-500/5 dark:bg-emerald-500/10' : isError ? 'bg-rose-500/5 dark:bg-rose-500/10' : isWarn ? 'bg-amber-500/5 dark:bg-amber-500/10' : 'bg-white/50 dark:bg-slate-800/50';
                     const border = isSuccess ? 'border-emerald-500/20' : isError ? 'border-rose-500/30' : isWarn ? 'border-amber-500/30' : 'border-slate-200/50 dark:border-slate-700/50';
                     const dot = isSuccess ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : isError ? 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.8)] animate-pulse' : isWarn ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)]' : 'bg-brand-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]';
                     const text = isSuccess ? 'text-emerald-700 dark:text-emerald-400 font-bold' : isError ? 'text-rose-700 dark:text-rose-400 font-bold' : isWarn ? 'text-amber-700 dark:text-amber-400 font-bold' : 'text-slate-700 dark:text-slate-300';
 
-                    const messageParts = L.message.split('->');
+                    const messageParts = String(logMsg).split('->');
                     
                     return (
                         <div key={i} className={`p-3.5 rounded-xl border text-sm flex flex-col gap-1.5 transition-all duration-300 ${bg} ${border}`}>
@@ -45,7 +50,7 @@ export default function ActivityLedger() {
                                     <div className="font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider text-[11px]">{messageParts[0]}</div>
                                 </div>
                                 <div className="text-[10px] text-slate-500 font-sans tracking-wide shrink-0">
-                                    {new Date(L.timestamp).toLocaleTimeString()}
+                                    {new Date(logTime).toLocaleTimeString()}
                                 </div>
                             </div>
                             {messageParts.length > 1 && (
