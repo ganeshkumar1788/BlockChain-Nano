@@ -252,17 +252,22 @@ export default function ZeroTrustPipeline() {
                 </div>
                 <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Secure Terminal</span>
               </div>
-              <div ref={logRef} className="flex-1 p-6 overflow-y-auto font-mono text-[10px] space-y-2.5">
-                {pipelineLogs.map((l, i) => (
-                  <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="flex gap-3">
-                    <span className="opacity-30">[{new Date(l.time).toLocaleTimeString([], { hour12: false })}]</span>
-                    <span className={l.status === 'rejected' ? 'text-rose-400' : l.status === 'success' ? 'text-emerald-400' : 'text-brand-400'}>
-                      {l.message}
-                    </span>
-                  </motion.div>
-                ))}
-                {isRunning && <motion.div animate={{ opacity: [1, 0] }} transition={{ repeat: Infinity, duration: 0.8 }} className="w-2 h-4 bg-brand-500 inline-block" />}
-                {pipelineLogs.length === 0 && !isRunning && <span className="text-slate-800 italic">SYSTEM IDLE...</span>}
+              <div ref={logRef} className="flex-1 p-6 font-mono text-[10px] space-y-2.5 relative overflow-hidden">
+                {/* Cinematic Scanlines */}
+                <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
+                
+                <div className="relative z-10 space-y-2.5 overflow-y-auto h-full max-h-[350px]">
+                  {pipelineLogs.map((l, i) => (
+                    <motion.div key={i} initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.2 }} className="flex gap-3">
+                      <span className="opacity-30">[{new Date(l.time).toLocaleTimeString([], { hour12: false, fractionalSecondDigits: 3 })}]</span>
+                      <span className={l.status === 'rejected' ? 'text-rose-400' : l.status === 'success' ? 'text-emerald-400' : 'text-brand-400'}>
+                        {l.message}
+                      </span>
+                    </motion.div>
+                  ))}
+                  {isRunning && <motion.div animate={{ opacity: [1, 0] }} transition={{ repeat: Infinity, duration: 0.5 }} className="w-2 h-4 bg-brand-500 inline-block align-middle" />}
+                  {pipelineLogs.length === 0 && !isRunning && <span className="text-slate-800 italic">SYSTEM IDLE...</span>}
+                </div>
               </div>
             </div>
           </div>

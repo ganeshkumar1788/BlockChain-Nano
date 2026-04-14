@@ -25,11 +25,11 @@ export default function CybersecurityEngine() {
   };
 
   return (
-    <div className="relative group reveal active h-full" style={{ transitionDelay: '100ms' }}>
+    <div className="relative group reveal active" style={{ transitionDelay: '100ms' }}>
       {/* GOATED Animated Border Glow */}
       <div className={`absolute -inset-[1px] rounded-[2.5rem] opacity-30 group-hover:opacity-70 transition-all duration-1000 blur-[2px] ${breachActive ? 'bg-rose-500' : 'bg-gradient-to-br from-rose-500/50 via-purple-500/50 to-blue-500/50'}`} />
       
-      <div className="glass-panel bg-slate-900/60 dark:bg-[#020617]/70 backdrop-blur-3xl rounded-[2.5rem] p-10 relative overflow-hidden border border-white/5 shadow-2xl h-full flex flex-col">
+      <div className="glass-panel bg-slate-900/60 dark:bg-[#020617]/70 backdrop-blur-3xl rounded-[2.5rem] p-10 relative overflow-hidden border border-white/5 shadow-2xl flex flex-col">
         
         {/* Breach Alert Overlay */}
         <AnimatePresence>

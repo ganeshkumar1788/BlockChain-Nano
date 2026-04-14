@@ -125,7 +125,7 @@ app.post('/api/pipeline/run', async (req, res) => {
             status: 'active', 
             message: steps[i].msg 
         });
-        await new Promise(r => setTimeout(r, 1200));
+        await new Promise(r => setTimeout(r, 600));
         
         io.emit('auth_flow', { 
             source: 'pipeline', 

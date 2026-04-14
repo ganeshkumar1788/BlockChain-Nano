@@ -92,9 +92,9 @@ export default function DashboardLayout() {
         <LogisticsTelemetry />
 
         {/* Main Dashboard Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div id="demo-section" className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             {/* Left Column: Identity & Security Controls */}
-            <div className="lg:col-span-1 space-y-8">
+            <div className="lg:col-span-1 space-y-8 h-fit">
                 <IdentityEngine />
                 <CybersecurityEngine />
             </div>
